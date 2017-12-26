@@ -4,6 +4,7 @@ Links for log files:
 2)http://indeedeng.github.io/imhotep/files/nasa_19950731.22-19950831.22.tsv.gz
 
 Current settings:
+
 1)producer.py - send batch of lines to 'third' topic
 
 2)spark.py - read 'third' topic, count categories and send result to 'output' topic
