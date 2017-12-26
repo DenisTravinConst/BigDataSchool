@@ -5,5 +5,7 @@ Links for log files:
 
 Current settings:
 1)producer.py - send batch of lines to 'third' topic
+
 2)spark.py - read 'third' topic, count categories and send result to 'output' topic
+
 3)comsumer.py - read 'output' topic
