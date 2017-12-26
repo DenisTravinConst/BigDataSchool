@@ -13,6 +13,6 @@ def main():
 if __name__ == "__main__":
     CONFIG = ConfigParser.RawConfigParser()
     CONFIG.read('resources/config.properties')
-    TOPIC_NAME = CONFIG.get('KafkaProperties', 'topic_name')
+    TOPIC_NAME = CONFIG.get('SparkProperties', 'output_topic')
     BROKERS = CONFIG.get('KafkaProperties', 'brokers')
     main()
