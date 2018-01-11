@@ -3,7 +3,7 @@ import os
 import ConfigParser
 import urllib
 from kafka import KafkaProducer
-from pyspark import SparkContext, SparkConf
+from pyspark.sql import SparkSession
 from pyspark.streaming import StreamingContext
 from pyspark.streaming.kafka import KafkaUtils
 
@@ -12,12 +12,11 @@ INDEX_ERROR = 'indexError'
 STATUS_CODE_ERROR = 'error-{}XX'
 
 CONFIG = ConfigParser.RawConfigParser()
-CONFIG.read('resources/config.properties')
+CONFIG.read('config.properties')
 TOPIC_NAME = CONFIG.get('KafkaProperties', 'topic_name')
 BROKERS = CONFIG.get('KafkaProperties', 'brokers')
 OUTPUT_TOPIC = CONFIG.get('SparkProperties', 'output_topic')
 CATCH_TIMEOUT = CONFIG.get('SparkProperties', 'catch_timeout')
-BACKUP_FILE_PATH = CONFIG.get('SparkProperties', 'backup_file_path')
 REFRESH_STREAM_STAT_MESSAGE = CONFIG.get('SparkProperties', 'refresh_stream_stat_message')
 
 os.environ['PYSPARK_SUBMIT_ARGS'] = CONFIG.get('SparkProperties', 'environ_settings')
@@ -28,21 +27,13 @@ CATEGORIES = dict()
 
 def main():
     """Main spark module method"""
-    conf = SparkConf().setMaster('local[*]').setAppName('SparkTest')
-    conf.set('spark.scheduler.mode', 'FAIR')
-    spark_context = SparkContext(conf=conf)
-    spark_context.setLogLevel('WARN')
+    spark_context = SparkSession.builder.appName('MultiNodeStream').getOrCreate().sparkContext
     streaming_context = StreamingContext(spark_context, int(CATCH_TIMEOUT))
-    direct_stream = KafkaUtils.createDirectStream(streaming_context, [TOPIC_NAME],
-                                                  {'metadata.broker.list': BROKERS})
+    direct_stream = KafkaUtils.createDirectStream(streaming_context, [TOPIC_NAME], {'metadata.broker.list': BROKERS})
     direct_stream.foreachRDD(handler)
 
     streaming_context.start()
     streaming_context.awaitTermination()
-
-
-def map_handler(message):
-    return get_root(message[1]), 1
 
 
 def handler(message):
@@ -53,18 +44,12 @@ def handler(message):
         line = record[1]
         if line == REFRESH_STREAM_STAT_MESSAGE:
             refresh_flag = True
-        dir_set(get_root(line), CATEGORIES)
+        else:
+            dir_set(get_root(line), CATEGORIES)
     output(CATEGORIES)
+    CATEGORIES.clear()
     if refresh_flag:
-        make_backup(CATEGORIES)
-        CATEGORIES.clear()
-
-
-def make_backup(dirs):
-    """Backup stream stats method"""
-    backup_file = open(BACKUP_FILE_PATH, 'w')
-    for key in dirs.keys():
-        print >> backup_file, '{}\t{}'.format(key, dirs[key])
+        PRODUCER.send(OUTPUT_TOPIC, key = REFRESH_STREAM_STAT_MESSAGE, value=REFRESH_STREAM_STAT_MESSAGE)
 
 
 def get_root(line):

@@ -21,15 +21,17 @@ def main():
                 last_batch_sent = time.time()
         if batch.qsize() != 0:
             send_batch(producer, batch)
+            print batch.qsize()
 
 
 def send_batch(producer, batch):
     """Batch send method"""
+    print batch.qsize()
     while not batch.qsize() == 0:
         line = batch.get()
         try:
             request_method = line.split('\t')[3]
-            producer.send(TOPIC_NAME, key=request_method, value=line).get()
+            producer.send(TOPIC_NAME, key=request_method, value=line)
         except IndexError:
             print '{}\nThis line have wrong format, SKIPPED'.format(line)
 
