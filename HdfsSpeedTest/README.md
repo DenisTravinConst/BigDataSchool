@@ -46,3 +46,14 @@ Here you can see approximately execution time for each combination:
 	
 
 We can calculate, what Python runs slover for ~25%, when pseudo-distributed lose ~5% from execution speed
+
+Test on small data amount:
+
+	Python local hadoop mode: 3.1/3.7/3.6 sec, average ~ 3.5 sec
+	
+  	Python pseudo-distributed hadoop mode: 3.9/4.2/3.8 sec, average ~ 4 sec
+	
+  	Java local hadoop mode: 3.0/2.7/2.7, average ~ 2.8 sec
+	
+  	Java pseudo-distributed hadoop mode: 3.1/3.7/3.6 sec, average ~ 3.5 sec
+	
