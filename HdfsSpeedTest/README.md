@@ -6,13 +6,17 @@ Used programming languages:  Python and Java
 Used hadoop modes: Local (Standalone) and Pseudo-Distributed
 
 Test map/reduce task:
-Given: NASA Apache Web Logs(http://opensource.indeedeng.io/imhotep/docs/sample-data/)
-Task: Count number of each url request root
+
+	Given: NASA Apache Web Logs(http://opensource.indeedeng.io/imhotep/docs/sample-data/)
+	
+	Task: Count number of each url request root
 
 I used same algorithm for Python and Java(You can find code in corresponding directories)
+
 Also you can find jar for more simple Java implemention
 
 Run command looks like:
+
 Python(Hadoop Streaming used):
 
 	Hadoop local mode: bin/hadoop jar $HADOOP_STREAM -file *.py -mapper mapper.py -reducer reducer.py -input input/*.tsv -output output
