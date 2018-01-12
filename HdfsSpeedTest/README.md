@@ -3,6 +3,7 @@
 In this experiment I research hadoop map/reduce job execution speed by using different programming languages and hadoop modes;
 
 Used programming languages:  Python and Java
+
 Used hadoop modes: Local (Standalone) and Pseudo-Distributed
 
 Test map/reduce task:
