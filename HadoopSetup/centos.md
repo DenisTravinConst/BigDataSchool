@@ -13,10 +13,10 @@ echo '<configuration><property><name>dfs.replication</name><value>1</value></pro
 ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 chmod 0600 ~/.ssh/authorized_keys
-hdfs namenode -format
 ssh-keyscan -H 0.0.0.0 >> ~/.ssh/known_hosts
 ssh-keyscan -H 127.0.0.1 >> ~/.ssh/known_hosts
 ssh-keyscan -H ::1 >> ~/.ssh/known_hosts
 ssh-keyscan -H localhost >> ~/.ssh/known_hosts
+~/hadoop-2.9.0/bin/hdfs namenode -formathdfs namenode -format
 ~/hadoop-2.9.0/sbin/start-dfs.sh
 exec bash
